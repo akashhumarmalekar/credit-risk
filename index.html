@@ -1,597 +1,349 @@
 <!DOCTYPE html>
-<html lang="en" class="h-full">
+<html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Credit Risk Prediction & Assessment Platform</title>
-    <!-- Tailwind CSS -->
-    <script src="https://cdn.tailwindcss.com"></script>
-    <!-- Google Fonts: Inter -->
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <!-- FontAwesome Icons -->
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'sans-serif'],
-                    },
-                }
-            }
-        }
-    </script>
-    <style>
-        body { font-family: 'Inter', sans-serif; }
-        .custom-slider::-webkit-slider-thumb {
-            background-color: #4f46e5;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Credit Risk Prediction Web App</title>
+  <style>
+    :root {
+      --bg: #0f172a;
+      --card-bg: #1e293b;
+      --border: #334155;
+      --text: #f8fafc;
+      --text-muted: #94a3b8;
+      --accent: #2563eb;
+      --accent-hover: #1d4ed8;
+      --green: #22c55e;
+      --yellow: #eab308;
+      --red: #ef4444;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      padding: 2rem 1rem;
+      display: flex;
+      justify-content: center;
+    }
+
+    .container {
+      max-width: 1100px;
+      width: 100%;
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 1.5rem;
+    }
+
+    @media (max-width: 768px) {
+      .container { grid-template-columns: 1fr; }
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 1.5rem;
+    }
+
+    h1, h2, h3 { margin-bottom: 1rem; }
+    h1 { grid-column: 1 / -1; color: var(--text); font-size: 1.75rem; text-align: center; }
+
+    .form-group {
+      margin-bottom: 1.25rem;
+    }
+
+    label {
+      display: block;
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      margin-bottom: 0.4rem;
+    }
+
+    input, select {
+      width: 100%;
+      padding: 0.65rem 0.85rem;
+      background-color: #0f172a;
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      color: var(--text);
+      font-size: 0.95rem;
+    }
+
+    input:focus, select:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .grid-2 {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 0.75rem;
+    }
+
+    .calc-badge {
+      display: inline-block;
+      padding: 0.2rem 0.5rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      margin-left: 0.5rem;
+    }
+
+    .badge-green { background-color: rgba(34, 197, 94, 0.2); color: var(--green); }
+    .badge-yellow { background-color: rgba(234, 179, 8, 0.2); color: var(--yellow); }
+    .badge-red { background-color: rgba(239, 68, 68, 0.2); color: var(--red); }
+
+    .result-box {
+      text-align: center;
+      padding: 1.5rem;
+      border-radius: 8px;
+      background-color: #0f172a;
+      margin-bottom: 1.5rem;
+    }
+
+    .score {
+      font-size: 2.5rem;
+      font-weight: 700;
+      margin: 0.5rem 0;
+    }
+
+    .preset-btn {
+      background: transparent;
+      border: 1px solid var(--border);
+      color: var(--text-muted);
+      padding: 0.4rem 0.8rem;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 0.8rem;
+      margin-right: 0.4rem;
+      margin-bottom: 0.4rem;
+    }
+
+    .preset-btn:hover {
+      border-color: var(--accent);
+      color: var(--text);
+    }
+  </style>
 </head>
-<body class="bg-slate-900 text-slate-100 min-h-full flex flex-col selection:bg-indigo-500 selection:text-white">
+<body>
 
-    <!-- Top Navigation Header -->
-    <header class="bg-slate-800/80 backdrop-blur-md border-b border-slate-700/60 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-16 flex items-center justify-between">
-            <div class="flex items-center space-x-3">
-                <div class="h-10 w-10 rounded-xl bg-gradient-to-tr from-indigo-600 to-violet-500 flex items-center justify-center shadow-lg shadow-indigo-500/30">
-                    <i class="fa-solid fa-chart-line text-white text-lg"></i>
-                </div>
-                <div>
-                    <h1 class="font-bold text-lg text-white tracking-tight">CreditRisk <span class="text-indigo-400 font-semibold text-xs px-2 py-0.5 rounded bg-indigo-950 border border-indigo-700/50">AI Engine</span></h1>
-                    <p class="text-xs text-slate-400">Logistic Regression & Probability of Default (PD) Modeling</p>
-                </div>
-            </div>
-            <div class="flex items-center space-x-3">
-                <button onclick="loadSample('prime')" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-600/60 transition font-medium flex items-center gap-1.5">
-                    <i class="fa-solid fa-user-check text-emerald-400"></i> Prime Profile
-                </button>
-                <button onclick="loadSample('subprime')" class="text-xs bg-slate-700 hover:bg-slate-600 text-slate-200 px-3 py-1.5 rounded-lg border border-slate-600/60 transition font-medium hidden sm:flex items-center gap-1.5">
-                    <i class="fa-solid fa-triangle-exclamation text-rose-400"></i> Subprime Profile
-                </button>
-            </div>
+  <div class="container">
+    <h1>Credit Risk Prediction Engine (₹ INR)</h1>
+
+    <!-- Input Form Card -->
+    <div class="card">
+      <div style="margin-bottom: 1rem;">
+        <span style="font-size: 0.85rem; color: var(--text-muted);">Quick Profiles:</span><br>
+        <button class="preset-btn" onclick="loadPreset('prime')">Prime Borrower</button>
+        <button class="preset-btn" onclick="loadPreset('moderate')">Moderate Risk</button>
+        <button class="preset-btn" onclick="loadPreset('high')">High Risk</button>
+      </div>
+
+      <h2>Borrower Details</h2>
+
+      <!-- Income & Obligations for DTI -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Monthly Gross Income (₹)</label>
+          <input type="number" id="monthlyIncome" value="120000" oninput="calculateMetrics()">
         </div>
-    </header>
-
-    <!-- Main Content Container -->
-    <main class="flex-grow max-w-7xl w-full mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
-        <!-- Welcome Banner -->
-        <div class="mb-8 bg-gradient-to-r from-indigo-900/40 via-slate-800 to-slate-800 border border-indigo-700/30 rounded-2xl p-6 shadow-xl relative overflow-hidden">
-            <div class="absolute -right-10 -bottom-10 w-60 h-60 bg-indigo-500/10 rounded-full blur-3xl pointer-events-none"></div>
-            <div class="relative z-10 flex flex-col md:flex-row md:items-center md:justify-between gap-4">
-                <div>
-                    <h2 class="text-2xl font-bold text-white tracking-tight">Borrower Creditworthiness & Risk Assessment</h2>
-                    <p class="text-slate-300 text-sm mt-1 max-w-2xl">
-                        Input borrower financial indicators to run real-time logistic regression probability calculations, evaluate Debt-to-Income ratios, and simulate default classification tiers.
-                    </p>
-                </div>
-                <div class="flex items-center gap-2">
-                    <span class="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                        <span class="w-2 h-2 mr-1.5 bg-emerald-400 rounded-full animate-pulse"></span> Model Active (scikit-learn sim)
-                    </span>
-                </div>
-            </div>
+        <div class="form-group">
+          <label>Monthly Debt Payments (₹)</label>
+          <input type="number" id="monthlyDebt" value="30000" oninput="calculateMetrics()">
         </div>
+      </div>
 
-        <!-- Grid Layout: Input Form vs Results Dashboard -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-            
-            <!-- Left Column: Borrower Financial Inputs (7 Cols) -->
-            <div class="lg:col-span-7 bg-slate-800/90 rounded-2xl border border-slate-700/80 p-6 shadow-xl backdrop-blur-sm">
-                <div class="flex items-center justify-between mb-6 pb-4 border-b border-slate-700">
-                    <div class="flex items-center space-x-2">
-                        <i class="fa-solid fa-sliders text-indigo-400"></i>
-                        <h3 class="font-semibold text-lg text-white">Borrower Financial Profile</h3>
-                    </div>
-                    <button onclick="resetForm()" class="text-xs text-slate-400 hover:text-white transition flex items-center gap-1">
-                        <i class="fa-solid fa-rotate-right"></i> Reset
-                    </button>
-                </div>
+      <!-- Auto-calculated DTI -->
+      <div class="form-group">
+        <label>
+          Calculated Debt-to-Income (DTI)
+          <span id="dtiBadge" class="calc-badge badge-green">Optimal</span>
+        </label>
+        <input type="text" id="dtiOutput" value="25.0%" readonly style="background: #1e293b; color: #64748b;">
+      </div>
 
-                <form id="creditForm" onsubmit="event.preventDefault(); calculateRisk();" class="space-y-5">
-                    
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Age -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Borrower Age (Years)</label>
-                            <input type="number" id="age" value="35" min="18" max="90" required oninput="calculateRisk()"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                        <!-- Annual Income -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Annual Income ($)</label>
-                            <input type="number" id="income" value="75000" min="10000" step="1000" required oninput="syncMonthlyIncome(); calculateRisk();"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Loan Amount -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Requested Loan Amount ($)</label>
-                            <input type="number" id="loanAmount" value="20000" min="1000" step="500" required oninput="calculateRisk()"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                        <!-- Interest Rate -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Interest Rate (%)</label>
-                            <input type="number" id="interestRate" value="11.5" min="1.0" max="35.0" step="0.1" required oninput="calculateRisk()"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                    </div>
-
-                    <!-- Dynamic Financial Ratio Inputs Section -->
-                    <div class="p-4 bg-slate-900/60 rounded-xl border border-indigo-500/20 space-y-4">
-                        <div class="flex items-center justify-between border-b border-slate-700/60 pb-2">
-                            <span class="text-xs font-semibold text-indigo-400 uppercase tracking-wider flex items-center gap-1.5">
-                                <i class="fa-solid fa-calculator"></i> Auto-Calculated Financial Ratios
-                            </span>
-                            <span class="text-[10px] bg-indigo-950 text-indigo-300 border border-indigo-700/50 px-2 py-0.5 rounded">Dynamic Engine</span>
-                        </div>
-
-                        <!-- Raw Inputs for DTI -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Monthly Gross Income ($)</label>
-                                <input type="number" id="monthlyIncome" value="6250" min="500" step="100" required oninput="calculateRisk()"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Monthly Debt Obligations ($)</label>
-                                <input type="number" id="monthlyDebt" value="1156" min="0" step="50" required oninput="calculateRisk()"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                            </div>
-                        </div>
-
-                        <!-- Computed DTI Badge Display -->
-                        <div class="flex items-center justify-between bg-slate-800/80 px-4 py-2.5 rounded-lg border border-slate-700">
-                            <span class="text-xs text-slate-300 font-medium">Computed Debt-to-Income (DTI):</span>
-                            <div class="flex items-center gap-2">
-                                <span id="calcDtiVal" class="text-sm font-bold text-white">18.5%</span>
-                                <span id="dtiStatusBadge" class="text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Optimal</span>
-                            </div>
-                        </div>
-
-                        <!-- Raw Inputs for Interest Coverage Ratio -->
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 pt-2">
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Annual EBIT / Operating Income ($)</label>
-                                <input type="number" id="ebit" value="18000" min="0" step="500" required oninput="calculateRisk()"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                            </div>
-                            <div>
-                                <label class="block text-xs font-medium text-slate-300 mb-1">Annual Interest Expense ($)</label>
-                                <input type="number" id="interestExpense" value="2300" min="1" step="100" required oninput="calculateRisk()"
-                                    class="w-full bg-slate-900 border border-slate-700 rounded-xl px-3 py-2 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                            </div>
-                        </div>
-
-                        <!-- Computed Interest Coverage Badge Display -->
-                        <div class="flex items-center justify-between bg-slate-800/80 px-4 py-2.5 rounded-lg border border-slate-700">
-                            <span class="text-xs text-slate-300 font-medium">Interest Coverage Ratio (EBIT / Interest):</span>
-                            <div class="flex items-center gap-2">
-                                <span id="calcIcrVal" class="text-sm font-bold text-white">7.83x</span>
-                                <span id="icrStatusBadge" class="text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">Strong Coverage</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Credit Score -->
-                        <div>
-                            <div class="flex justify-between items-center mb-1.5">
-                                <label class="text-xs font-medium text-slate-300">Credit Score (FICO)</label>
-                                <span id="scoreVal" class="text-xs font-semibold text-indigo-400">720</span>
-                            </div>
-                            <input type="range" id="creditScore" min="300" max="850" value="720" oninput="document.getElementById('scoreVal').innerText = this.value; calculateRisk();"
-                                class="w-full h-2 bg-slate-900 rounded-lg appearance-none cursor-pointer accent-indigo-500">
-                            <div class="flex justify-between text-[10px] text-slate-500 mt-1">
-                                <span>300 (Poor)</span>
-                                <span>580 (Fair)</span>
-                                <span>670 (Good)</span>
-                                <span>850 (Excellent)</span>
-                            </div>
-                        </div>
-                        <!-- Employment Length -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Employment Length (Years)</label>
-                            <input type="number" id="employmentLength" value="6" min="0" max="40" required oninput="calculateRisk()"
-                                class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                        </div>
-                    </div>
-
-                    <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
-                        <!-- Previous Defaults -->
-                        <div>
-                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Previous Defaults / Bankruptcies</label>
-                            <select id="defaults" onchange="calculateRisk()" class="w-full bg-slate-900 border border-slate-700 rounded-xl px-4 py-2.5 text-sm text-white focus:outline-none focus:border-indigo-500 transition">
-                                <option value="0">0 (No Prior Defaults)</option>
-                                <option value="1">1 Prior Default</option>
-                                <option value="2">2+ Prior Defaults</option>
-                            </select>
-                        </div>
-                    </div>
-
-                    <!-- Quick Sample Presets -->
-                    <div class="pt-2">
-                        <span class="text-xs text-slate-400 block mb-2 font-medium">Quick Test Profiles:</span>
-                        <div class="flex flex-wrap gap-2">
-                            <button type="button" onclick="loadSample('prime')" class="px-3 py-1 rounded-lg text-xs bg-slate-700/70 hover:bg-slate-700 text-slate-300 border border-slate-600 transition">Prime Borrower</button>
-                            <button type="button" onclick="loadSample('borderline')" class="px-3 py-1 rounded-lg text-xs bg-slate-700/70 hover:bg-slate-700 text-slate-300 border border-slate-600 transition">Borderline Case</button>
-                            <button type="button" onclick="loadSample('subprime')" class="px-3 py-1 rounded-lg text-xs bg-slate-700/70 hover:bg-slate-700 text-slate-300 border border-slate-600 transition">Subprime / High Risk</button>
-                        </div>
-                    </div>
-
-                    <!-- Submit Button -->
-                    <div class="pt-4">
-                        <button type="submit" class="w-full bg-gradient-to-r from-indigo-600 to-violet-600 hover:from-indigo-500 hover:to-violet-500 text-white font-medium py-3 px-4 rounded-xl shadow-lg shadow-indigo-600/30 transition flex items-center justify-center gap-2">
-                            <i class="fa-solid fa-calculator"></i> Assess Credit Risk & Calculate PD
-                        </button>
-                    </div>
-
-                </form>
-            </div>
-
-            <!-- Right Column: Results & Analytics Dashboard (5 Cols) -->
-            <div class="lg:col-span-5 flex flex-col space-y-6">
-                
-                <!-- Scorecard Box -->
-                <div id="resultCard" class="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-6 shadow-xl backdrop-blur-sm flex flex-col justify-between relative overflow-hidden transition-all duration-300">
-                    <div class="absolute top-0 right-0 w-32 h-32 bg-indigo-500/5 rounded-full blur-2xl pointer-events-none"></div>
-
-                    <div>
-                        <div class="flex items-center justify-between pb-4 border-b border-slate-700 mb-6">
-                            <div class="flex items-center space-x-2">
-                                <i class="fa-solid fa-gauge-high text-indigo-400"></i>
-                                <h3 class="font-semibold text-lg text-white">Assessment Summary</h3>
-                            </div>
-                            <span id="riskBadge" class="px-3 py-1 rounded-full text-xs font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30">
-                                Low Risk
-                            </span>
-                        </div>
-
-                        <!-- Main Score Display -->
-                        <div class="text-center py-4">
-                            <p class="text-xs uppercase tracking-wider text-slate-400 font-medium mb-1">Probability of Default (PD)</p>
-                            <div class="flex items-center justify-center">
-                                <span id="pdValue" class="text-5xl font-extrabold text-white tracking-tight">4.2</span>
-                                <span class="text-2xl font-bold text-slate-400 ml-1">%</span>
-                            </div>
-                            <p id="riskLabelDescription" class="text-xs text-slate-300 mt-2">Borrower demonstrates high financial stability with strong credit metrics.</p>
-                        </div>
-
-                        <!-- Progress Bar for PD -->
-                        <div class="mt-4 mb-6">
-                            <div class="flex justify-between text-xs text-slate-400 mb-1">
-                                <span>0% (Safe)</span>
-                                <span>50% (Threshold)</span>
-                                <span>100% (Default)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 rounded-full h-3 p-0.5 border border-slate-700">
-                                <div id="pdBar" class="bg-emerald-500 h-2 rounded-full transition-all duration-700" style="width: 4.2%;"></div>
-                            </div>
-                        </div>
-
-                        <!-- Key Metrics Breakdown -->
-                        <div class="grid grid-cols-2 gap-3 pt-4 border-t border-slate-700/60">
-                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
-                                <span class="text-[11px] text-slate-400 block">Recommended Action</span>
-                                <span id="actionRec" class="text-sm font-semibold text-emerald-400">Instant Approval</span>
-                            </div>
-                            <div class="bg-slate-900/60 p-3 rounded-xl border border-slate-700/50">
-                                <span class="text-[11px] text-slate-400 block">Max Suggested Limit</span>
-                                <span id="limitRec" class="text-sm font-semibold text-white">$35,000</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Risk Factor Contribution Breakdown -->
-                <div class="bg-slate-800/90 rounded-2xl border border-slate-700/80 p-6 shadow-xl backdrop-blur-sm flex-grow">
-                    <h4 class="font-semibold text-sm text-white mb-4 flex items-center gap-2">
-                        <i class="fa-solid fa-chart-bar text-indigo-400"></i> Key Risk Drivers (Feature Impact)
-                    </h4>
-                    
-                    <div class="space-y-3.5 text-xs">
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1">
-                                <span>FICO Credit Score Weight</span>
-                                <span id="factorScore" class="text-indigo-400 font-medium">Positive (+45%)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div id="barScore" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 85%;"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1">
-                                <span>Debt-to-Income (DTI) Ratio</span>
-                                <span id="factorDti" class="text-indigo-400 font-medium">Neutral (18%)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div id="barDti" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 35%;"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1">
-                                <span>Interest Coverage (EBIT / Interest)</span>
-                                <span id="factorIcr" class="text-emerald-400 font-medium">High (7.8x)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div id="barIcr" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 80%;"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1">
-                                <span>Loan Amount vs. Annual Income</span>
-                                <span id="factorIncome" class="text-indigo-400 font-medium">Favorable (25%)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div id="barIncome" class="bg-indigo-500 h-full rounded-full transition-all duration-500" style="width: 50%;"></div>
-                            </div>
-                        </div>
-
-                        <div>
-                            <div class="flex justify-between text-slate-300 mb-1">
-                                <span>Prior Defaults History</span>
-                                <span id="factorDefaults" class="text-emerald-400 font-medium">Clean (0%)</span>
-                            </div>
-                            <div class="w-full bg-slate-900 h-1.5 rounded-full overflow-hidden">
-                                <div id="barDefaults" class="bg-emerald-500 h-full rounded-full transition-all duration-500" style="width: 5%;"></div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
-            </div>
-
+      <!-- Operating Income & Interest for ICR -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Monthly Operating Income/EBIT (₹)</label>
+          <input type="number" id="ebit" value="150000" oninput="calculateMetrics()">
         </div>
-
-    </main>
-
-    <!-- Footer -->
-    <footer class="bg-slate-800 border-t border-slate-700/60 mt-12 py-4">
-        <div class="max-w-7xl mx-auto px-4 text-center text-xs text-slate-400">
-            Credit Risk Prediction Engine &bull; Developed for Financial Analytics & Risk Assessment &bull; Powered by Logistic Regression Simulation
+        <div class="form-group">
+          <label>Monthly Interest Expense (₹)</label>
+          <input type="number" id="interestExp" value="15000" oninput="calculateMetrics()">
         </div>
-    </footer>
+      </div>
 
-    <!-- JavaScript Simulation Logic -->
-    <script>
-        // Preset sample borrower profiles
-        const samples = {
-            prime: {
-                age: 41,
-                income: 95000,
-                monthlyIncome: 7916,
-                monthlyDebt: 950,
-                ebit: 28000,
-                interestExpense: 1800,
-                loanAmount: 15000,
-                interestRate: 7.5,
-                creditScore: 780,
-                employmentLength: 8,
-                defaults: 0
-            },
-            borderline: {
-                age: 29,
-                income: 52000,
-                monthlyIncome: 4333,
-                monthlyDebt: 1646,
-                ebit: 9500,
-                interestExpense: 3800,
-                loanAmount: 22000,
-                interestRate: 14.5,
-                creditScore: 640,
-                employmentLength: 2,
-                defaults: 0
-            },
-            subprime: {
-                age: 24,
-                income: 34000,
-                monthlyIncome: 2833,
-                monthlyDebt: 1473,
-                ebit: 4200,
-                interestExpense: 6100,
-                loanAmount: 25000,
-                interestRate: 24.5,
-                creditScore: 540,
-                employmentLength: 1,
-                defaults: 1
-            }
-        };
+      <!-- Auto-calculated ICR -->
+      <div class="form-group">
+        <label>
+          Calculated Interest Coverage Ratio (ICR)
+          <span id="icrBadge" class="calc-badge badge-green">Strong Coverage</span>
+        </label>
+        <input type="text" id="icrOutput" value="10.0x" readonly style="background: #1e293b; color: #64748b;">
+      </div>
 
-        function syncMonthlyIncome() {
-            const income = parseFloat(document.getElementById('income').value) || 0;
-            if (income > 0) {
-                document.getElementById('monthlyIncome').value = Math.round(income / 12);
-            }
-        }
+      <!-- Risk Factors -->
+      <div class="grid-2">
+        <div class="form-group">
+          <label>Past Delinquency History</label>
+          <select id="delinquencies" onchange="calculateMetrics()">
+            <option value="0">0 Days Past Due (Clean)</option>
+            <option value="1">1-30 Days Past Due</option>
+            <option value="2">30-90 Days Past Due</option>
+            <option value="3">90+ Days Past Due (Severe)</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Credit Utilization Ratio (%)</label>
+          <input type="number" id="utilization" value="20" min="0" max="100" oninput="calculateMetrics()">
+        </div>
+      </div>
 
-        function loadSample(type) {
-            const data = samples[type];
-            if (!data) return;
+      <div class="form-group">
+        <label>Total Loan Exposure (₹)</label>
+        <input type="number" id="loanAmount" value="1500000" oninput="calculateMetrics()">
+      </div>
+    </div>
 
-            document.getElementById('age').value = data.age;
-            document.getElementById('income').value = data.income;
-            document.getElementById('monthlyIncome').value = data.monthlyIncome;
-            document.getElementById('monthlyDebt').value = data.monthlyDebt;
-            document.getElementById('ebit').value = data.ebit;
-            document.getElementById('interestExpense').value = data.interestExpense;
-            document.getElementById('loanAmount').value = data.loanAmount;
-            document.getElementById('interestRate').value = data.interestRate;
-            document.getElementById('creditScore').value = data.creditScore;
-            document.getElementById('scoreVal').innerText = data.creditScore;
-            document.getElementById('employmentLength').value = data.employmentLength;
-            document.getElementById('defaults').value = data.defaults;
+    <!-- Prediction Output Card -->
+    <div class="card">
+      <h2>Risk Assessment Scorecard</h2>
 
-            calculateRisk();
-        }
+      <div class="result-box">
+        <span style="font-size: 0.9rem; color: var(--text-muted);">Probability of Default (PD)</span>
+        <div class="score" id="pdScore">3.2%</div>
+        <span id="riskTag" class="calc-badge badge-green" style="font-size: 0.9rem; padding: 0.3rem 0.8rem;">Low Risk (Approved)</span>
+      </div>
 
-        function resetForm() {
-            document.getElementById('creditForm').reset();
-            document.getElementById('scoreVal').innerText = '720';
-            syncMonthlyIncome();
-            calculateRisk();
-        }
+      <h3 style="font-size: 1rem; color: var(--text-muted);">Key Risk Drivers</h3>
+      <div style="font-size: 0.9rem; line-height: 1.6;">
+        <p>• <strong>DTI Status:</strong> <span id="summaryDTI">25.0% (Well balanced)</span></p>
+        <p>• <strong>Interest Coverage:</strong> <span id="summaryICR">10.0x (Sufficient cash flow)</span></p>
+        <p>• <strong>Revolving Credit Usage:</strong> <span id="summaryUtil">20% Utilization</span></p>
+        <p>• <strong>Delinquency Factor:</strong> <span id="summaryDelinq">No past due history recorded</span></p>
+      </div>
+    </div>
+  </div>
 
-        // Logistic Regression Probability Simulation Function
-        function calculateRisk() {
-            const age = parseFloat(document.getElementById('age').value) || 30;
-            const income = parseFloat(document.getElementById('income').value) || 50000;
-            const monthlyIncome = parseFloat(document.getElementById('monthlyIncome').value) || (income / 12);
-            const monthlyDebt = parseFloat(document.getElementById('monthlyDebt').value) || 0;
-            const ebit = parseFloat(document.getElementById('ebit').value) || 0;
-            const interestExpense = parseFloat(document.getElementById('interestExpense').value) || 1;
-            const loanAmount = parseFloat(document.getElementById('loanAmount').value) || 15000;
-            const interestRate = parseFloat(document.getElementById('interestRate').value) || 10;
-            const creditScore = parseFloat(document.getElementById('creditScore').value) || 700;
-            const employmentLength = parseFloat(document.getElementById('employmentLength').value) || 3;
-            const defaults = parseInt(document.getElementById('defaults').value) || 0;
+  <script>
+    function calculateMetrics() {
+      // Get values
+      const income = parseFloat(document.getElementById('monthlyIncome').value) || 0;
+      const debt = parseFloat(document.getElementById('monthlyDebt').value) || 0;
+      const ebit = parseFloat(document.getElementById('ebit').value) || 0;
+      const interest = parseFloat(document.getElementById('interestExp').value) || 0;
+      const delinquencies = parseInt(document.getElementById('delinquencies').value) || 0;
+      const utilization = parseFloat(document.getElementById('utilization').value) || 0;
 
-            // DTI Dynamic Calculation: (Monthly Debt / Monthly Income) * 100
-            const calculatedDti = monthlyIncome > 0 ? (monthlyDebt / monthlyIncome) * 100 : 0;
-            
-            // Interest Coverage Ratio Dynamic Calculation: EBIT / Interest Expense
-            const calculatedIcr = interestExpense > 0 ? (ebit / interestExpense) : 0;
+      // Calculate DTI
+      let dti = 0;
+      if (income > 0) {
+        dti = (debt / income) * 100;
+      }
+      document.getElementById('dtiOutput').value = dti.toFixed(1) + '%';
+      
+      const dtiBadge = document.getElementById('dtiBadge');
+      if (dti <= 35) {
+        dtiBadge.className = 'calc-badge badge-green';
+        dtiBadge.innerText = 'Optimal';
+      } else if (dti <= 50) {
+        dtiBadge.className = 'calc-badge badge-yellow';
+        dtiBadge.innerText = 'Moderate';
+      } else {
+        dtiBadge.className = 'calc-badge badge-red';
+        dtiBadge.innerText = 'High Leverage';
+      }
 
-            // Update UI for calculated ratios
-            updateRatioBadges(calculatedDti, calculatedIcr);
+      // Calculate ICR
+      let icr = 0;
+      if (interest > 0) {
+        icr = ebit / interest;
+      } else {
+        icr = ebit > 0 ? 99 : 0;
+      }
+      document.getElementById('icrOutput').value = icr > 50 ? '> 50x' : icr.toFixed(1) + 'x';
 
-            // Simulated Logistic Regression Weights & Intercept
-            let intercept = 4.2;
-            let scoreCoefficient = -0.012 * (creditScore - 650); 
-            let dtiCoefficient = 0.045 * (calculatedDti - 20); // Dynamic DTI impact
-            let icrCoefficient = -0.35 * (calculatedIcr - 3.0); // Dynamic ICR impact (higher ICR reduces risk)
-            let loanIncomeRatio = (loanAmount / income);
-            let leverageCoefficient = 2.5 * (loanIncomeRatio - 0.3);
-            let defaultCoefficient = 1.8 * defaults; 
-            let interestCoefficient = 0.08 * (interestRate - 10);
+      const icrBadge = document.getElementById('icrBadge');
+      if (icr >= 3.0) {
+        icrBadge.className = 'calc-badge badge-green';
+        icrBadge.innerText = 'Strong Coverage';
+      } else if (icr >= 1.5) {
+        icrBadge.className = 'calc-badge badge-yellow';
+        icrBadge.innerText = 'Adequate';
+      } else {
+        icrBadge.className = 'calc-badge badge-red';
+        icrBadge.innerText = 'Vulnerable';
+      }
 
-            let z = intercept + scoreCoefficient + dtiCoefficient + icrCoefficient + leverageCoefficient + defaultCoefficient + interestCoefficient;
-            
-            // Sigmoid function: Probability of Default (PD)
-            let pd = 1 / (1 + Math.exp(-z));
-            let pdPercent = Math.max(0.5, Math.min(98.5, pd * 100));
+      // Logistic Regression Model Calculation
+      // z = intercept + w1(DTI) + w2(ICR_inverse) + w3(Delinq) + w4(Util)
+      const intercept = -3.5;
+      const w_dti = 0.04;
+      const w_icr = icr > 0 ? (1.5 / icr) : 2.5;
+      const w_delinq = 1.1;
+      const w_util = 0.03;
 
-            updateDashboard(pdPercent, creditScore, calculatedDti, calculatedIcr, defaults, loanAmount, income);
-        }
+      const z = intercept + (w_dti * dti) + w_icr + (w_delinq * delinquencies) + (w_util * utilization);
+      const pd = (1 / (1 + Math.exp(-z))) * 100;
 
-        function updateRatioBadges(dti, icr) {
-            // DTI Badge Update
-            const dtiValEl = document.getElementById('calcDtiVal');
-            const dtiBadgeEl = document.getElementById('dtiStatusBadge');
-            dtiValEl.innerText = dti.toFixed(1) + '%';
-            
-            if (dti <= 25) {
-                dtiBadgeEl.innerText = "Optimal";
-                dtiBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-            } else if (dti <= 43) {
-                dtiBadgeEl.innerText = "Moderate";
-                dtiBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30";
-            } else {
-                dtiBadgeEl.innerText = "High Leverage";
-                dtiBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30";
-            }
+      // Update UI Result
+      const pdScore = document.getElementById('pdScore');
+      const riskTag = document.getElementById('riskTag');
 
-            // ICR Badge Update
-            const icrValEl = document.getElementById('calcIcrVal');
-            const icrBadgeEl = document.getElementById('icrStatusBadge');
-            icrValEl.innerText = icr.toFixed(2) + 'x';
+      pdScore.innerText = pd.toFixed(1) + '%';
 
-            if (icr >= 3.0) {
-                icrBadgeEl.innerText = "Strong Coverage";
-                icrBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-emerald-500/10 text-emerald-400 border border-emerald-500/30";
-            } else if (icr >= 1.5) {
-                icrBadgeEl.innerText = "Adequate";
-                icrBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-amber-500/10 text-amber-400 border border-amber-500/30";
-            } else {
-                icrBadgeEl.innerText = "Vulnerable";
-                icrBadgeEl.className = "text-[10px] px-2 py-0.5 rounded font-semibold bg-rose-500/10 text-rose-400 border border-rose-500/30";
-            }
-        }
+      if (pd < 10) {
+        pdScore.style.color = 'var(--green)';
+        riskTag.className = 'calc-badge badge-green';
+        riskTag.innerText = 'Low Risk (Approved)';
+      } else if (pd < 25) {
+        pdScore.style.color = 'var(--yellow)';
+        riskTag.className = 'calc-badge badge-yellow';
+        riskTag.innerText = 'Moderate Risk (Manual Review)';
+      } else {
+        pdScore.style.color = 'var(--red)';
+        riskTag.className = 'calc-badge badge-red';
+        riskTag.innerText = 'High Risk (Declined)';
+      }
 
-        function updateDashboard(pd, creditScore, dti, icr, defaults, loanAmount, income) {
-            const pdValEl = document.getElementById('pdValue');
-            const pdBarEl = document.getElementById('pdBar');
-            const riskBadgeEl = document.getElementById('riskBadge');
-            const riskDescEl = document.getElementById('riskLabelDescription');
-            const actionRecEl = document.getElementById('actionRec');
-            const limitRecEl = document.getElementById('limitRec');
+      // Summaries
+      document.getElementById('summaryDTI').innerText = `${dti.toFixed(1)}% (${dti <= 35 ? 'Well balanced' : 'Elevated ratio'})`;
+      document.getElementById('summaryICR').innerText = `${icr.toFixed(1)}x (${icr >= 3 ? 'Sufficient cash flow' : 'Tight liquidity'})`;
+      document.getElementById('summaryUtil').innerText = `${utilization}% Utilization`;
+      document.getElementById('summaryDelinq').innerText = delinquencies === 0 ? 'No past due history recorded' : `${delinquencies * 30}+ days past due history`;
+    }
 
-            pdValEl.innerText = pd.toFixed(1);
-            pdBarEl.style.width = pd.toFixed(1) + '%';
+    function loadPreset(type) {
+      if (type === 'prime') {
+        document.getElementById('monthlyIncome').value = 150000;
+        document.getElementById('monthlyDebt').value = 30000;
+        document.getElementById('ebit').value = 180000;
+        document.getElementById('interestExp').value = 12000;
+        document.getElementById('delinquencies').value = 0;
+        document.getElementById('utilization').value = 15;
+      } else if (type === 'moderate') {
+        document.getElementById('monthlyIncome').value = 80000;
+        document.getElementById('monthlyDebt').value = 35000;
+        document.getElementById('ebit').value = 90000;
+        document.getElementById('interestExp').value = 25000;
+        document.getElementById('delinquencies').value = 1;
+        document.getElementById('utilization').value = 55;
+      } else if (type === 'high') {
+        document.getElementById('monthlyIncome').value = 50000;
+        document.getElementById('monthlyDebt').value = 32000;
+        document.getElementById('ebit').value = 40000;
+        document.getElementById('interestExp').value = 28000;
+        document.getElementById('delinquencies').value = 3;
+        document.getElementById('utilization').value = 85;
+      }
+      calculateMetrics();
+    }
 
-            let badgeClass = "";
-            let badgeText = "";
-            let descText = "";
-            let actionText = "";
-            let limitText = "";
-            let barColor = "";
-
-            if (pd < 15) {
-                badgeText = "Low Risk (Prime)";
-                badgeClass = "bg-emerald-500/10 text-emerald-400 border-emerald-500/30";
-                descText = "Borrower demonstrates robust financial health, high interest coverage, and low leverage.";
-                actionText = "Instant Approval";
-                limitText = "$" + Math.round(income * 0.45).toLocaleString();
-                barColor = "bg-emerald-500";
-            } else if (pd < 45) {
-                badgeText = "Moderate Risk (Standard)";
-                badgeClass = "bg-amber-500/10 text-amber-400 border-amber-500/30";
-                descText = "Borrower is acceptable with standard pricing. Monitor interest coverage and employment stability.";
-                actionText = "Conditional Approval";
-                limitText = "$" + Math.round(income * 0.25).toLocaleString();
-                barColor = "bg-amber-500";
-            } else {
-                badgeText = "High Risk (Subprime)";
-                badgeClass = "bg-rose-500/10 text-rose-400 border-rose-500/30";
-                descText = "High probability of default detected due to high DTI, low interest coverage, or prior defaults history.";
-                actionText = "Manual Review / Reject";
-                limitText = "$0 (Declined)";
-                barColor = "bg-rose-500";
-            }
-
-            riskBadgeEl.className = `px-3 py-1 rounded-full text-xs font-semibold border ${badgeClass}`;
-            riskBadgeEl.innerText = badgeText;
-            riskDescEl.innerText = descText;
-            actionRecEl.innerText = actionText;
-            actionRecEl.className = `text-sm font-semibold ${pd < 15 ? 'text-emerald-400' : pd < 45 ? 'text-amber-400' : 'text-rose-400'}`;
-            limitRecEl.innerText = limitText;
-            pdBarEl.className = `${barColor} h-2 rounded-full transition-all duration-700`;
-
-            // Update feature breakdown bars
-            document.getElementById('barScore').style.width = Math.min(100, Math.max(10, ((creditScore - 300) / 550) * 100)) + '%';
-            
-            document.getElementById('factorDti').innerText = `${dti < 25 ? 'Favorable' : dti < 43 ? 'Neutral' : 'Elevated'} (${dti.toFixed(1)}%)`;
-            document.getElementById('barDti').style.width = Math.min(100, Math.max(10, dti)) + '%';
-            
-            document.getElementById('factorIcr').innerText = `${icr >= 3 ? 'Strong' : icr >= 1.5 ? 'Moderate' : 'Low'} (${icr.toFixed(2)}x)`;
-            document.getElementById('barIcr').style.width = Math.min(100, Math.max(10, (icr / 10) * 100)) + '%';
-
-            document.getElementById('barIncome').style.width = Math.min(100, Math.max(10, (loanAmount / income) * 100 * 1.5)) + '%';
-            
-            const defBar = document.getElementById('barDefaults');
-            const defFactor = document.getElementById('factorDefaults');
-            if (defaults === 0) {
-                defBar.style.width = "5%";
-                defBar.className = "bg-emerald-500 h-full rounded-full transition-all duration-500";
-                defFactor.innerText = "Clean (0%)";
-                defFactor.className = "text-emerald-400 font-medium";
-            } else {
-                defBar.style.width = (defaults * 45) + "%";
-                defBar.className = "bg-rose-500 h-full rounded-full transition-all duration-500";
-                defFactor.innerText = `High Impact (+${defaults * 45}%)`;
-                defFactor.className = "text-rose-400 font-medium";
-            }
-        }
-
-        // Run initial calculation on load
-        window.onload = function() {
-            calculateRisk();
-        };
-    </script>
-<!-- ... existing code -->
+    // Initial Run
+    calculateMetrics();
+  </script>
+</body>
+</html>
